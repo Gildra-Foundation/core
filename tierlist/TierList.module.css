@@ -1,0 +1,486 @@
+.root {
+  padding-bottom: clamp(48px, 8vw, 96px);
+}
+
+.root[data-dragging] {
+  cursor: grabbing;
+  user-select: none;
+}
+
+/* ── расстановка из ссылки ── */
+.notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  background: var(--panel-ally, #14212c);
+  box-shadow: inset 0 0 0 1px var(--ally);
+  color: var(--ash);
+}
+
+.notice b {
+  color: var(--bone);
+  font-weight: 600;
+}
+
+.noticeActions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── линии и действия ── */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  min-height: 42px;
+  margin-bottom: 16px;
+}
+
+.lanes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.lanes button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px;
+  background: var(--stone);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ash);
+  font-size: var(--fs-14);
+  transition:
+    color var(--t-fast) var(--ease),
+    background var(--t-fast) var(--ease);
+}
+
+.lanes button:hover {
+  background: var(--stone-2);
+  color: var(--bone);
+}
+
+.lanes button[aria-pressed='true'] {
+  background: var(--panel-ally, #17242e);
+  box-shadow: inset 0 0 0 1px var(--ally);
+  color: var(--bone);
+}
+
+.lanes button[aria-pressed='true'] svg {
+  color: var(--ally);
+}
+
+.lanesPlaceholder {
+  height: 42px;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.status {
+  color: var(--health);
+  font-size: var(--fs-14);
+}
+
+.status:empty {
+  display: none;
+}
+
+.danger {
+  color: var(--enemy);
+}
+
+/* ── ряды тиров ── */
+.board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: start;
+  gap: 24px;
+}
+
+.tiers {
+  display: grid;
+  gap: 4px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  background: var(--night-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+
+.row[data-over],
+.root[data-selecting] .row:hover {
+  box-shadow: inset 0 0 0 1px var(--tier);
+}
+
+.letter {
+  display: grid;
+  place-items: center;
+  min-height: 80px;
+  background: var(--tier);
+  color: var(--night);
+  font-family: var(--font-display);
+  font-size: var(--fs-32);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.zone {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+  min-height: 80px;
+  padding: 10px;
+}
+
+.root[data-selecting] .zone {
+  cursor: pointer;
+}
+
+.caret {
+  position: absolute;
+  width: 3px;
+  background: var(--tier);
+  pointer-events: none;
+}
+
+/* ── портрет чемпиона ── */
+.champ {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  width: 60px;
+  min-width: 0;
+  color: var(--ash);
+  text-align: center;
+  cursor: grab;
+  touch-action: manipulation;
+}
+
+a.champ {
+  cursor: pointer;
+}
+
+.champ img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  background: var(--well, #0b100e);
+  outline: 1px solid rgba(0, 0, 0, 0.55);
+  outline-offset: -1px;
+}
+
+.champ span {
+  overflow: hidden;
+  font-size: var(--fs-12);
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.champ:hover span,
+.champ[aria-pressed='true'] span {
+  color: var(--bone);
+}
+
+.champ:focus-visible {
+  outline: none;
+}
+
+.champ:focus-visible img {
+  outline: 2px solid var(--bone);
+  outline-offset: 2px;
+}
+
+.champ[aria-pressed='true'] img {
+  outline: 2px solid var(--ally);
+  outline-offset: 2px;
+}
+
+.champ[data-lifted] {
+  opacity: 0.3;
+}
+
+.ghost {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 70;
+  width: 60px;
+  height: 60px;
+  outline: 2px solid var(--ally);
+  pointer-events: none;
+  scale: 1.08;
+}
+
+/* ── правая колонка: выбранный и нераспределённые ── */
+.side {
+  position: sticky;
+  top: calc(var(--header-h) + 16px);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  max-height: calc(100dvh - var(--header-h) - 32px);
+}
+
+.action {
+  display: grid;
+  flex-shrink: 0;
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-areas:
+    'img name'
+    'tiers tiers';
+  align-items: center;
+  gap: 14px 12px;
+  min-height: 138px;
+  padding: 14px;
+  background: var(--stone);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.action > img {
+  grid-area: img;
+  width: 48px;
+  height: 48px;
+  outline: 2px solid var(--ally);
+  outline-offset: 2px;
+}
+
+.actionName {
+  display: grid;
+  grid-area: name;
+  gap: 2px;
+  min-width: 0;
+}
+
+.actionName b {
+  overflow: hidden;
+  font-family: var(--font-display);
+  font-size: var(--fs-21);
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.actionName span {
+  color: var(--ash);
+  font-size: var(--fs-14);
+}
+
+.actionTiers {
+  display: grid;
+  grid-area: tiers;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 6px;
+}
+
+/* кнопки тиров — клавиши с цветом тира */
+.actionTiers button {
+  height: 42px;
+  border-bottom: 3px solid color-mix(in srgb, var(--tier) 35%, var(--abyss, #050807));
+  background: color-mix(in srgb, var(--tier) 14%, var(--night));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tier) 50%, transparent);
+  color: var(--tier);
+  font-family: var(--font-display);
+  font-size: var(--fs-18);
+  font-weight: 800;
+  transition: background var(--t-fast) var(--ease);
+}
+
+.actionTiers button:hover {
+  background: color-mix(in srgb, var(--tier) 26%, var(--night));
+}
+
+.actionTiers button[aria-pressed='true'] {
+  background: var(--tier);
+  color: var(--night);
+}
+
+.actionTiers .remove {
+  display: grid;
+  place-items: center;
+  border-bottom-color: var(--abyss, #050807);
+  background: var(--night-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ash);
+}
+
+.actionTiers .remove:hover {
+  background: var(--stone-2);
+  color: var(--bone);
+}
+
+.hint {
+  grid-column: 1 / -1;
+  color: var(--ash);
+  font-size: var(--fs-14);
+  line-height: 1.9;
+}
+
+.benchHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.benchHead h2 {
+  font-size: var(--fs-18);
+}
+
+.benchHead span {
+  color: var(--ash-2);
+  font-size: var(--fs-14);
+}
+
+.search {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 12px;
+  background: var(--well, #0d1311);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ash-2);
+}
+
+.search:focus-within {
+  box-shadow: inset 0 0 0 1px var(--ally);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  outline: none;
+  color: var(--bone);
+}
+
+.search input::placeholder {
+  color: var(--ash-2);
+}
+
+.bench {
+  flex: 1;
+  min-height: 180px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  align-content: start;
+  gap: 14px 8px;
+  padding: 12px;
+  overflow-y: auto;
+  background: var(--night-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+
+.bench[data-over] {
+  box-shadow: inset 0 0 0 1px var(--ash);
+}
+
+.bench .champ {
+  width: auto;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  color: var(--ash);
+  font-size: var(--fs-14);
+}
+
+@media (max-width: 960px) {
+  .root {
+    padding-bottom: 170px;
+  }
+
+  .board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    position: static;
+    max-height: none;
+  }
+
+  .bench {
+    max-height: 460px;
+  }
+
+  /* на телефоне выбранный чемпион и кнопки тиров прижаты к низу экрана */
+  .action {
+    display: none;
+  }
+
+  .action[data-active] {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    display: grid;
+    min-height: 0;
+    padding: 12px var(--gutter) calc(12px + env(safe-area-inset-bottom));
+    box-shadow: inset 0 1px 0 var(--line-2);
+  }
+
+  /* линии в одну строку: значок над подписью, как на главной */
+  .lanes {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .lanes button {
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    height: 52px;
+    padding: 0;
+    font-size: var(--fs-12);
+  }
+
+  .row {
+    grid-template-columns: 44px minmax(0, 1fr);
+  }
+
+  .letter {
+    min-height: 64px;
+    font-size: var(--fs-24);
+  }
+
+  .zone {
+    gap: 6px;
+    min-height: 64px;
+    padding: 8px;
+  }
+
+  .zone .champ {
+    width: 46px;
+  }
+}

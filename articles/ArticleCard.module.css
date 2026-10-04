@@ -1,0 +1,106 @@
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--night-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+
+.card:hover {
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+
+.card:hover .title {
+  color: #fff;
+}
+
+.cover {
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--well, #0b100e);
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px 18px;
+}
+
+.category {
+  color: var(--health);
+  font-size: var(--fs-14);
+  font-weight: 500;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-21);
+  font-weight: 700;
+  line-height: 1.15;
+  text-wrap: balance;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.description {
+  color: var(--ash);
+  font-size: var(--fs-14);
+  line-height: 1.55;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: auto;
+  padding-top: 6px;
+  color: var(--ash-2);
+  font-size: var(--fs-12);
+}
+
+/* ── главная статья ── */
+.lead {
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-rows: auto;
+}
+
+.lead .cover {
+  aspect-ratio: auto;
+  min-height: 340px;
+}
+
+.lead .body {
+  justify-content: center;
+  gap: 12px;
+  padding: 32px;
+}
+
+.lead .title {
+  font-size: clamp(var(--fs-24), 3vw, var(--fs-44));
+}
+
+.lead .description {
+  font-size: var(--fs-16);
+}
+
+@media (max-width: 860px) {
+  .lead {
+    grid-template-columns: 1fr;
+  }
+
+  .lead .cover {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+
+  .lead .body {
+    padding: 20px 18px;
+  }
+}

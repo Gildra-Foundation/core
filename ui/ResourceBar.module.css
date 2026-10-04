@@ -1,0 +1,102 @@
+.bar {
+  position: relative;
+  overflow: hidden;
+  background: var(--well, #0a0f0d);
+  border: 1px solid var(--abyss, #050807);
+  box-shadow: inset 0 0 0 1px rgba(233, 228, 214, 0.05);
+}
+
+.sm {
+  height: 8px;
+}
+
+.md {
+  height: 14px;
+}
+
+.lg {
+  height: 20px;
+}
+
+.fill,
+.base,
+.ticks {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--fill);
+  transition: width var(--t-slow) var(--ease);
+}
+
+.fill {
+  /* верхняя светлая треть — как блик на полосках здоровья в игре */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 34%, rgba(0, 0, 0, 0) 34% 100%),
+    var(--bar);
+}
+
+/* с base: до base — яркая полоска, дальше — приглушённая */
+.base {
+  width: var(--base);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 34%, rgba(0, 0, 0, 0) 34% 100%),
+    var(--bar);
+}
+
+.split .fill {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0 34%, rgba(0, 0, 0, 0) 34% 100%),
+    color-mix(in srgb, var(--bar) 36%, var(--well, #0a0f0d));
+}
+
+.ticks {
+  background-image:
+    repeating-linear-gradient(90deg, transparent 0 calc(var(--major) - 2px), rgba(5, 8, 7, 0.9) calc(var(--major) - 2px) var(--major)),
+    repeating-linear-gradient(90deg, transparent 0 calc(var(--tick) - 1px), rgba(5, 8, 7, 0.55) calc(var(--tick) - 1px) var(--tick));
+}
+
+.reverse .fill,
+.reverse .base,
+.reverse .ticks {
+  left: auto;
+  right: 0;
+}
+
+.reverse .ticks {
+  transform: scaleX(-1);
+}
+
+.caption {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 3px #000;
+}
+
+.lg .caption {
+  font-size: 13px;
+}
+
+/* первая загрузка: полоска наполняется слева направо */
+.boot .fill,
+.boot .base,
+.boot .ticks {
+  animation: boot 900ms var(--ease) 150ms both;
+}
+
+@keyframes boot {
+  from {
+    width: 0;
+  }
+}

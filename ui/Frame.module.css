@@ -1,0 +1,40 @@
+.frame {
+  --c: var(--chamfer);
+  --border: var(--line);
+  --surface: var(--stone);
+  position: relative;
+  padding: 1px;
+  background: var(--border);
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+}
+
+.inner {
+  height: 100%;
+  background: var(--surface);
+  clip-path: polygon(
+    calc(var(--c) - 0.4px) 0,
+    100% 0,
+    100% calc(100% - var(--c) + 0.4px),
+    calc(100% - var(--c) + 0.4px) 100%,
+    0 100%,
+    0 calc(var(--c) - 0.4px)
+  );
+}
+
+.default {
+  --border: var(--line);
+}
+
+.ally {
+  --border: var(--ally);
+  --surface: var(--panel-ally, #14212c);
+}
+
+.enemy {
+  --border: var(--enemy);
+  --surface: var(--panel-enemy, #261719);
+}
+
+.health {
+  --border: var(--health);
+}

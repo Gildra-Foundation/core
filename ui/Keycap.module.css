@@ -1,0 +1,30 @@
+.key {
+  display: inline-grid;
+  place-items: center;
+  min-inline-size: 1.9em;
+  block-size: 1.9em;
+  padding: 0 0.45em;
+  border: 1px solid var(--line-2);
+  border-bottom-width: 3px;
+  border-bottom-color: var(--well, #0b100e);
+  border-radius: var(--radius-key);
+  background: linear-gradient(180deg, var(--key-top, #2c3732), var(--key-bottom, #212a26));
+  color: var(--bone);
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.sm {
+  font-size: 11px;
+  border-bottom-width: 2px;
+}
+
+.md {
+  font-size: 13px;
+}
+
+.lg {
+  font-size: 18px;
+}

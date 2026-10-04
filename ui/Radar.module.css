@@ -1,0 +1,25 @@
+.radar {
+  width: 100%;
+  height: auto;
+}
+
+.ring {
+  fill: none;
+  stroke: rgba(233, 228, 214, 0.1);
+}
+
+.outer {
+  fill: rgba(233, 228, 214, 0.03);
+  stroke: rgba(233, 228, 214, 0.22);
+}
+
+.spoke {
+  stroke: rgba(233, 228, 214, 0.1);
+}
+
+.label {
+  fill: var(--ash);
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+}

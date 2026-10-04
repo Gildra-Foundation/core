@@ -1,0 +1,458 @@
+.root {
+  --match: var(--health);
+  --partial: var(--warn);
+  --miss: var(--enemy);
+  padding-bottom: clamp(48px, 8vw, 96px);
+}
+
+.placeholder {
+  min-height: 420px;
+}
+
+/* ── режим и номер загадки ── */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.modes {
+  display: flex;
+  gap: 4px;
+}
+
+.modes button {
+  height: 42px;
+  padding: 0 16px;
+  background: var(--stone);
+  box-shadow: inset 0 0 0 1px var(--line);
+  color: var(--ash);
+  font-size: var(--fs-14);
+  transition:
+    color var(--t-fast) var(--ease),
+    background var(--t-fast) var(--ease);
+}
+
+.modes button:hover {
+  background: var(--stone-2);
+  color: var(--bone);
+}
+
+.modes button[aria-pressed='true'] {
+  background: var(--panel-ally, #17242e);
+  box-shadow: inset 0 0 0 1px var(--ally);
+  color: var(--bone);
+}
+
+.round {
+  color: var(--ash);
+  font-size: var(--fs-14);
+}
+
+.round button {
+  color: var(--ally);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.modeHint {
+  margin: 12px 0 24px;
+  color: var(--ash-2);
+  font-size: var(--fs-14);
+}
+
+/* «По арту»: арт слева, ввод и итог справа — всё видно без прокрутки */
+.stage[data-mode='art'] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+  align-items: start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.stage[data-mode='art'] .ask {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.stage[data-mode='art'] .side {
+  min-height: 0;
+}
+
+.stage[data-mode='art'] .win {
+  margin-bottom: 16px;
+}
+
+/* ── арт: сначала крупный чёрно-белый кусочек, с ошибками отдаляется ── */
+.art {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--well, #0b100e);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition:
+    transform 800ms var(--ease),
+    filter 800ms var(--ease);
+}
+
+.art[data-gray] img {
+  filter: grayscale(1) contrast(1.05);
+}
+
+.art[data-solved] {
+  box-shadow: inset 0 0 0 2px var(--health);
+}
+
+.zoom {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 4px 8px;
+  background: rgba(5, 8, 7, 0.82);
+  font-family: var(--font-display);
+  font-size: var(--fs-14);
+  font-weight: 700;
+}
+
+/* ── поле ввода ── */
+.ask {
+  display: grid;
+  grid-template-columns: minmax(0, 560px) minmax(0, 1fr);
+  align-items: start;
+  gap: 12px 24px;
+  margin-bottom: 24px;
+}
+
+.combo {
+  position: relative;
+}
+
+.input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 14px;
+  background: var(--well, #0d1311);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  color: var(--ash-2);
+}
+
+.input:focus-within {
+  box-shadow: inset 0 0 0 1px var(--ally);
+}
+
+.input input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: none;
+  outline: none;
+  color: var(--bone);
+  font-size: var(--fs-18);
+}
+
+.input input::placeholder {
+  color: var(--ash-2);
+}
+
+.options {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 6px;
+  background: var(--night-2);
+  box-shadow:
+    0 0 0 1px var(--line-2),
+    0 24px 48px rgba(0, 0, 0, 0.55);
+  list-style: none;
+}
+
+.options li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  font-size: var(--fs-16);
+  cursor: pointer;
+}
+
+.options li[aria-selected='true'] {
+  background: var(--stone);
+  box-shadow: inset 3px 0 0 var(--ally);
+}
+
+.options img {
+  width: 36px;
+  height: 36px;
+}
+
+.side {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 18px;
+  min-height: 52px;
+  color: var(--ash);
+  font-size: var(--fs-14);
+}
+
+.hint {
+  color: var(--bone);
+}
+
+.hintButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ally);
+}
+
+.hintButton:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hintLater {
+  color: var(--ash-2);
+}
+
+/* ── таблица признаков ── */
+.tableWrap {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-2) transparent;
+}
+
+.table {
+  width: 100%;
+  min-width: 860px;
+  border-collapse: separate;
+  border-spacing: 4px;
+  table-layout: fixed;
+}
+
+.table thead th {
+  padding: 0 6px 4px;
+  color: var(--ash-2);
+  font-family: var(--font-text);
+  font-size: var(--fs-12);
+  font-weight: 500;
+  text-align: center;
+}
+
+.table thead th:first-child {
+  width: 180px;
+  text-align: left;
+}
+
+.table tbody th {
+  padding: 6px;
+  background: var(--well, #0d1311);
+  font-family: var(--font-text);
+  font-size: var(--fs-14);
+  font-weight: 500;
+  text-align: left;
+}
+
+.table tbody th img {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+.table td {
+  --v: var(--miss);
+  height: 64px;
+  padding: 6px 8px;
+  background: color-mix(in srgb, var(--v) 20%, var(--night-2));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--v) 70%, transparent);
+  font-size: var(--fs-14);
+  line-height: 1.25;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.table td[data-verdict='match'] {
+  --v: var(--match);
+}
+
+.table td[data-verdict='partial'] {
+  --v: var(--partial);
+}
+
+.table td svg {
+  display: block;
+  margin: 2px auto 0;
+}
+
+/* новая строка открывается ячейка за ячейкой */
+.table tr[data-fresh] td {
+  animation: flip 460ms var(--ease) both;
+  animation-delay: calc(var(--i) * 120ms);
+  transform-origin: 50% 0;
+}
+
+@keyframes flip {
+  from {
+    opacity: 0;
+    transform: perspective(400px) rotateX(-80deg);
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 12px;
+  color: var(--ash-2);
+  font-size: var(--fs-12);
+}
+
+.legend span[data-verdict]::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  background: color-mix(in srgb, var(--v) 40%, var(--night-2));
+  box-shadow: inset 0 0 0 1px var(--v);
+}
+
+.legend span[data-verdict='match'] {
+  --v: var(--match);
+}
+
+.legend span[data-verdict='partial'] {
+  --v: var(--partial);
+}
+
+.legend span[data-verdict='miss'] {
+  --v: var(--miss);
+}
+
+/* ── победа ── */
+.win {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--night-2);
+  box-shadow: inset 0 0 0 1px var(--health);
+  animation: win 520ms var(--ease) both;
+}
+
+@keyframes win {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.winArt {
+  flex: 1 1 420px;
+  min-width: 0;
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.winText {
+  flex: 1 1 300px;
+  min-width: 0;
+  padding: 8px;
+}
+
+.winLabel {
+  color: var(--health);
+  font-size: var(--fs-14);
+  font-weight: 600;
+}
+
+.winText h2 {
+  margin-top: 6px;
+  font-size: clamp(var(--fs-44), 6vw, var(--fs-84));
+  font-variation-settings: 'wdth' 85;
+  line-height: 0.95;
+}
+
+.winTitle {
+  margin: 8px 0 14px;
+  color: var(--ash);
+  font-size: var(--fs-21);
+}
+
+.winActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.status {
+  min-height: 1.5em;
+  margin-top: 10px;
+  color: var(--health);
+  font-size: var(--fs-14);
+}
+
+/* ── ошибки в режиме «По арту» ── */
+.misses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.misses li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  background: color-mix(in srgb, var(--miss) 18%, var(--night-2));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--miss) 60%, transparent);
+  font-size: var(--fs-14);
+}
+
+.misses img {
+  width: 28px;
+  height: 28px;
+}
+
+@media (max-width: 960px) {
+  .stage[data-mode='art'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 760px) {
+  .ask {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    min-height: 0;
+  }
+}

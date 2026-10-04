@@ -1,0 +1,262 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--night);
+  border-bottom: 1px solid var(--line);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  height: var(--header-h);
+}
+
+.brand {
+  flex: none;
+}
+
+.nav {
+  display: flex;
+  align-self: stretch;
+  gap: 4px;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  color: var(--ash);
+  font-size: var(--fs-16);
+  font-weight: 500;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.link:hover {
+  color: var(--bone);
+}
+
+.link[aria-current='page'],
+.link[data-active] {
+  color: var(--bone);
+}
+
+.link[aria-current='page']::after,
+.link[data-active]::after {
+  content: '';
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 2px;
+  background: var(--ally);
+}
+
+/* ── выпадающая группа разделов ── */
+.group {
+  position: relative;
+  display: flex;
+  align-self: stretch;
+}
+
+.group > .link {
+  gap: 4px;
+}
+
+.chevron {
+  transition: transform var(--t-fast) var(--ease);
+}
+
+.link[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 40;
+  display: grid;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--night-2);
+  box-shadow:
+    0 0 0 1px var(--line-2),
+    0 24px 48px rgba(0, 0, 0, 0.55);
+}
+
+.dropLink {
+  padding: 10px 12px;
+  color: var(--ash);
+  font-size: var(--fs-16);
+  font-weight: 500;
+}
+
+.dropLink:hover {
+  background: var(--stone);
+  color: var(--bone);
+}
+
+.dropLink[aria-current='page'] {
+  color: var(--bone);
+  box-shadow: inset 3px 0 0 var(--ally);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  height: 36px;
+  padding: 0 6px 0 12px;
+  min-width: 220px;
+  background: var(--well, #0d1311);
+  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: 2px;
+  color: var(--ash-2);
+  font-size: var(--fs-14);
+  transition: box-shadow var(--t-fast) var(--ease);
+}
+
+.search:hover {
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  color: var(--ash);
+}
+
+.searchText {
+  margin-right: auto;
+}
+
+.patch {
+  color: var(--ash-2);
+  font-size: var(--fs-14);
+  white-space: nowrap;
+}
+
+/* переключатель языка: ссылка на ту же страницу на другом языке */
+.lang {
+  display: flex;
+  gap: 4px;
+}
+
+.lang a {
+  display: grid;
+  place-items: center;
+  min-width: 40px;
+  height: 36px;
+  padding: 0 8px;
+  box-shadow: inset 0 0 0 1px var(--line);
+  border-radius: 2px;
+  color: var(--ash);
+  font-family: var(--font-display);
+  font-size: var(--fs-14);
+  font-weight: 700;
+  transition:
+    color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+.lang a:hover {
+  box-shadow: inset 0 0 0 1px var(--line-2);
+  color: var(--bone);
+}
+
+.menuButton {
+  display: none;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  color: var(--bone);
+}
+
+.mobile {
+  display: none;
+}
+
+/* пометка о патче — только на очень широких экранах, иначе меню не помещается */
+@media (max-width: 1600px) {
+  .patch {
+    display: none;
+  }
+}
+
+@media (max-width: 1380px) {
+  .search {
+    min-width: 0;
+  }
+
+  .searchText,
+  .search kbd,
+  .patch {
+    display: none;
+  }
+
+  .search {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 1180px) {
+  .nav {
+    display: none;
+  }
+
+  .menuButton {
+    display: grid;
+  }
+
+  .search {
+    margin-left: auto;
+  }
+
+  .mobile {
+    display: block;
+    padding: 8px var(--gutter) 20px;
+    border-top: 1px solid var(--line);
+    background: var(--night);
+  }
+
+  .mobileLink {
+    display: block;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-size: var(--fs-21);
+    font-weight: 700;
+    color: var(--ash);
+  }
+
+  .mobileGroup {
+    padding: 18px 0 2px;
+    color: var(--ash-2);
+    font-size: var(--fs-12);
+  }
+
+  .mobileLink[aria-current='page'] {
+    color: var(--bone);
+    box-shadow: inset 3px 0 0 var(--ally);
+    padding-left: 12px;
+  }
+
+  .lang {
+    display: none;
+  }
+
+  .mobileLang a {
+    display: inline-block;
+    margin-top: 16px;
+    color: var(--ally);
+    font-size: var(--fs-16);
+  }
+
+  .mobilePatch {
+    margin-top: 14px;
+    color: var(--ash-2);
+    font-size: var(--fs-14);
+  }
+}

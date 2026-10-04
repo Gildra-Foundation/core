@@ -1,0 +1,71 @@
+.button {
+  --c: var(--button-cut, 8px); /* срез углов; тема может заменить скруглением */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  font-family: var(--font-text);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--button-radius, 0);
+  clip-path: polygon(var(--c) 0, 100% 0, 100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, 0 100%, 0 var(--c));
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.md {
+  height: 44px;
+  padding: 0 20px;
+  font-size: var(--fs-16);
+}
+
+.sm {
+  --c: var(--button-cut-sm, 6px);
+  height: 34px;
+  padding: 0 14px;
+  font-size: var(--fs-14);
+}
+
+.primary {
+  background: var(--bone);
+  color: var(--night);
+}
+
+.primary:hover {
+  background: #fff;
+}
+
+.secondary {
+  background: var(--stone);
+  color: var(--bone);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+
+.secondary:hover {
+  background: var(--stone-2);
+  box-shadow: inset 0 0 0 1px var(--ally);
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ash);
+}
+
+.ghost:hover {
+  color: var(--bone);
+  background: var(--stone);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--ally);
+  outline-offset: 3px;
+}

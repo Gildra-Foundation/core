@@ -1,0 +1,16 @@
+.head {
+  padding: clamp(36px, 6vw, 64px) 0 28px;
+}
+
+.head h1 {
+  font-size: clamp(var(--fs-44), 7vw, var(--fs-84));
+  font-weight: 800;
+  font-variation-settings: 'wdth' 85;
+  line-height: 0.95;
+}
+
+.head p {
+  max-width: 70ch;
+  margin-top: 14px;
+  color: var(--ash);
+}

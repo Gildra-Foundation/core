@@ -1,0 +1,120 @@
+.control {
+  display: grid;
+  grid-template-columns: 36px auto 36px;
+  grid-template-areas:
+    'minus level plus'
+    'track track track';
+  align-items: center;
+  gap: 8px 10px;
+}
+
+.compact {
+  grid-template-areas: 'minus level plus';
+}
+
+.step {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line-2);
+  border-bottom-width: 3px;
+  border-bottom-color: var(--well, #0b100e);
+  border-radius: var(--radius-key);
+  background: linear-gradient(180deg, var(--key-top, #2c3732), var(--key-bottom, #212a26));
+  color: var(--bone);
+  transition:
+    transform var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.step:first-child {
+  grid-area: minus;
+}
+
+.step:nth-of-type(2) {
+  grid-area: plus;
+}
+
+.step:hover:not(:disabled) {
+  border-color: var(--ally);
+  border-bottom-color: var(--well, #0b100e);
+}
+
+.step:active:not(:disabled) {
+  transform: translateY(2px);
+  border-bottom-width: 1px;
+}
+
+.step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.level {
+  grid-area: level;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  cursor: default;
+}
+
+.caption {
+  color: var(--ash-2);
+  font-size: var(--fs-12);
+  line-height: 1;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: var(--fs-32);
+  font-weight: 800;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  color: var(--bone);
+}
+
+.compact .value {
+  font-size: var(--fs-24);
+}
+
+.track {
+  grid-area: track;
+  position: relative;
+  height: 14px;
+}
+
+.pips {
+  display: grid;
+  grid-template-columns: repeat(var(--count, 18), 1fr);
+  gap: 3px;
+  height: 100%;
+}
+
+.pips span {
+  background: var(--well, #0a0f0d);
+  border: 1px solid var(--line);
+  transform: skewX(-18deg);
+  transition: background var(--t-fast) var(--ease);
+}
+
+.pips span.on {
+  background: var(--ally);
+  border-color: var(--ally-soft, #7cbcff);
+}
+
+/* настоящий ползунок поверх делений: тянется мышью и работает с клавиатуры */
+.range {
+  position: absolute;
+  inset: -6px 0;
+  width: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.track:has(.range:focus-visible) {
+  outline: 2px solid var(--ally);
+  outline-offset: 4px;
+}

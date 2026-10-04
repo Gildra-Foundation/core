@@ -1,0 +1,251 @@
+/*
+  База движка: сброс, типографика, сетка, служебные классы, переходы между страницами.
+  Цвета и шрифты задаёт тема игры — список обязательных токенов в docs/new-game.md.
+  Размеры, сетку и движение тема может переопределить.
+*/
+
+:root {
+  /* ── Типографика ── */
+  /* шкала по «Основам стиля в типографике»: 12 14 16 18 21 24 32 44 60 84 */
+  --fs-12: 0.75rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-21: 1.3125rem;
+  --fs-24: 1.5rem;
+  --fs-32: 2rem;
+  --fs-44: 2.75rem;
+  --fs-60: 3.75rem;
+  --fs-84: 5.25rem;
+
+  /* ── Форма ── */
+  --chamfer: 12px; /* срез углов у рамок HUD */
+  --radius-key: 6px; /* клавиши */
+  --radius: 3px;
+
+  /* ── Сетка ── */
+  --container: 1280px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --header-h: 60px;
+
+  /* ── Движение ── */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.6, 0, 0.2, 1);
+  --t-fast: 120ms;
+  --t-base: 200ms;
+  --t-slow: 420ms;
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
+  --duration-move: 380ms;
+}
+
+/* ── База ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--night);
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--night);
+  color: var(--bone);
+  font-family: var(--font-text);
+  font-size: var(--fs-16);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote {
+  margin: 0;
+}
+
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--ally);
+  color: #0a1220;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ally);
+  outline-offset: 2px;
+}
+
+/* ── Утилиты ── */
+.container {
+  width: min(100% - var(--gutter) * 2, var(--container));
+  margin-inline: auto;
+}
+
+.num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── View Transitions ── */
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes vt-slide {
+  from {
+    translate: var(--slide-offset);
+  }
+  to {
+    translate: 0;
+  }
+}
+
+/* шапка не участвует в переходах страниц */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+
+::view-transition-old(site-header) {
+  display: none;
+}
+
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* портрет чемпиона перелетает из сетки в HUD */
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-move);
+  animation-timing-function: var(--ease-in-out);
+}
+
+::view-transition-image-pair(.morph) {
+  isolation: auto;
+}
+
+/* переход вглубь: из списка к чемпиону и обратно */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -40px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade reverse,
+    var(--duration-move) var(--ease-in-out) both vt-slide reverse;
+}
+
+::view-transition-new(.nav-forward) {
+  --slide-offset: 40px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-in-out) both vt-slide;
+}
+
+::view-transition-old(.nav-back) {
+  --slide-offset: 40px;
+  animation:
+    var(--duration-exit) ease-in both vt-fade reverse,
+    var(--duration-move) var(--ease-in-out) both vt-slide reverse;
+}
+
+::view-transition-new(.nav-back) {
+  --slide-offset: -40px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both vt-fade,
+    var(--duration-move) var(--ease-in-out) both vt-slide;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
