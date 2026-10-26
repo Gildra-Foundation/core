@@ -210,7 +210,9 @@ export function GuessGame<T extends GuessItem>({ items: champions, columns, icon
       setDaily(updated);
       try {
         localStorage.setItem(storageKey, JSON.stringify({ day, ...updated }));
-      } catch {}
+      } catch {
+        // Storage can be unavailable; the current round remains playable in memory.
+      }
     }
     setFresh(c.id);
     setQuery('');

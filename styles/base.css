@@ -249,3 +249,6 @@ p {
     animation-delay: 0s !important;
   }
 }
+
+.skip-link { position: fixed; top: 8px; left: 8px; z-index: 1000; padding: 12px 18px; background: var(--bg, #121a17); color: var(--text, #fff); transform: translateY(-160%); }
+.skip-link:focus { transform: translateY(0); outline: 2px solid currentColor; }

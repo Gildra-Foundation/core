@@ -58,3 +58,5 @@
     grid-template-columns: 1fr;
   }
 }
+
+.sources a { text-decoration: underline; text-underline-offset: 3px; }

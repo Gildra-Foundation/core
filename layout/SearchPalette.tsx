@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocale, useMessages } from '../i18n/LocaleProvider';
 import { LOCALE_TAG, defineMessages, localePath } from '../i18n/locale';
+import { createJsonLoader } from '../lib/json-loader';
 import { Icon } from '../ui/Icon';
 import { Keycap } from '../ui/Keycap';
 import styles from './SearchPalette.module.css';
@@ -13,6 +14,8 @@ const MESSAGES = defineMessages({
     placeholder: 'Что найти?',
     emptyHint: 'Проверьте написание.',
     loading: 'Загружаю индекс…',
+    failed: 'Не удалось загрузить поиск. Проверьте соединение.',
+    retry: 'Попробовать снова',
     sections: 'Разделы',
     search: 'Поиск',
     close: 'Закрыть поиск',
@@ -26,6 +29,8 @@ const MESSAGES = defineMessages({
     placeholder: 'What are you looking for?',
     emptyHint: 'Check the spelling.',
     loading: 'Loading the index…',
+    failed: 'Search could not load. Check your connection.',
+    retry: 'Try again',
     sections: 'Sections',
     search: 'Search',
     close: 'Close search',
@@ -67,15 +72,20 @@ const norm = (s: string) =>
     .replace(/ё/g, 'е')
     .replace(/[^a-zа-я0-9]/g, '');
 
-const indexes = new Map<string, Promise<SearchIndex>>();
-const loadIndex = (url: string) => {
-  let promise = indexes.get(url);
-  if (!promise) {
-    promise = fetch(url).then((r) => r.json());
-    indexes.set(url, promise);
-  }
-  return promise;
-};
+const loadIndex = createJsonLoader<SearchIndex>((value): value is SearchIndex => {
+  if (!value || typeof value !== 'object' || !('groups' in value) || !Array.isArray(value.groups)) return false;
+  return value.groups.every((group: unknown) => {
+    if (!group || typeof group !== 'object') return false;
+    const g = group as Record<string, unknown>;
+    return typeof g.title === 'string' && typeof g.limit === 'number' && Array.isArray(g.items) &&
+      g.items.every((item: unknown) => {
+        if (!item || typeof item !== 'object') return false;
+        const entry = item as Record<string, unknown>;
+        return typeof entry.href === 'string' && entry.href.startsWith('/') && !entry.href.startsWith('//') &&
+          typeof entry.title === 'string' && typeof entry.sub === 'string';
+      });
+  });
+});
 
 /** Чем раньше совпадение, тем выше запись: начало названия, вхождение, подпись, метка. */
 function score(e: SearchEntry, q: string) {
@@ -99,6 +109,24 @@ export function SearchPalette({ sections, placeholder, emptyHint, loadingText, i
   const [query, setQuery] = useState('');
   const [index, setIndex] = useState<SearchIndex | null>(null);
   const [active, setActive] = useState(0);
+  const [failed, setFailed] = useState(false);
+  const requestId = useRef(0);
+
+  const retry = useCallback(() => {
+    const id = ++requestId.current;
+    setFailed(false);
+    loadIndex(indexUrl).then((data) => {
+      if (id === requestId.current) setIndex(data);
+    }).catch(() => {
+      if (id === requestId.current) setFailed(true);
+    });
+  }, [indexUrl]);
+
+  useEffect(() => {
+    setIndex(null);
+    setFailed(false);
+    return () => { requestId.current += 1; };
+  }, [indexUrl]);
 
   const open = useCallback((initial = '') => {
     const dialog = dialogRef.current;
@@ -107,8 +135,8 @@ export function SearchPalette({ sections, placeholder, emptyHint, loadingText, i
     setQuery(initial);
     setActive(0);
     requestAnimationFrame(() => inputRef.current?.focus());
-    loadIndex(indexUrl).then(setIndex);
-  }, [indexUrl]);
+    retry();
+  }, [retry]);
 
   useEffect(() => {
     const onOpen = (e: Event) => open((e as CustomEvent<string>).detail ?? '');
@@ -187,6 +215,8 @@ export function SearchPalette({ sections, placeholder, emptyHint, loadingText, i
           placeholder={placeholder ?? t.placeholder}
           autoComplete="off"
           spellCheck={false}
+          aria-label={t.search}
+          aria-autocomplete="list"
           role="combobox"
           aria-expanded="true"
           aria-controls="search-results"
@@ -237,7 +267,11 @@ export function SearchPalette({ sections, placeholder, emptyHint, loadingText, i
         {query && index && flat.length === 0 && <p className={styles.empty}>
             {t.nothing(query.trim())} {emptyHint ?? t.emptyHint}
           </p>}
-        {query && !index && <p className={styles.empty}>{loadingText ?? t.loading}</p>}
+        {failed && <div className={styles.empty} role="alert">
+          <p>{t.failed}</p>
+          <button type="button" onClick={retry}>{t.retry}</button>
+        </div>}
+        {query && !index && !failed && <p className={styles.empty} role="status">{loadingText ?? t.loading}</p>}
       </div>
 
       <p className={styles.foot}>
