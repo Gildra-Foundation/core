@@ -37,6 +37,8 @@ interface HeaderProps {
   badge?: string;
   /** та же пометка в мобильном меню: «Данные патча 16.19» */
   mobileBadge?: string;
+  /** слот сайта справа от поиска: кнопка входа, меню аккаунта — движок не знает, что там */
+  actions?: React.ReactNode;
 }
 
 const MESSAGES = defineMessages({
@@ -47,7 +49,7 @@ const MESSAGES = defineMessages({
 /** Открывает поиск из любого места сайта: кнопкой, ссылкой или кодом. */
 export const openSearch = (query = '') => window.dispatchEvent(new CustomEvent('rc:search', { detail: query }));
 
-export function Header({ name, mark, nav, searchLabel, badge, mobileBadge }: HeaderProps) {
+export function Header({ name, mark, nav, searchLabel, badge, mobileBadge, actions }: HeaderProps) {
   const t = useMessages(MESSAGES);
   // разделы сравниваем без префикса языка: /en/items — это раздел /items
   const pathname = stripLocale(usePathname()).path;
@@ -81,6 +83,8 @@ export function Header({ name, mark, nav, searchLabel, badge, mobileBadge }: Hea
         </button>
 
         {badge && <span className={styles.patch}>{badge}</span>}
+
+        {actions && <div className={styles.actions}>{actions}</div>}
 
         <LanguageSwitch className={styles.lang} label={t.language} />
 

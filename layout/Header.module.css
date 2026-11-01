@@ -135,6 +135,13 @@
   white-space: nowrap;
 }
 
+/* слот сайта: кнопка входа, меню аккаунта */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* переключатель языка: ссылка на ту же страницу на другом языке */
 .lang {
   display: flex;
