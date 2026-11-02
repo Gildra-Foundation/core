@@ -38,6 +38,15 @@
   outline: none;
 }
 
+/* поле — единственное в окне и всегда в фокусе: вместо обводки, обрезанной краем окна, подсвечиваем нижнюю границу шапки */
+.input:focus-visible {
+  outline: none;
+}
+
+.head:focus-within {
+  border-bottom-color: var(--ally);
+}
+
 .input::placeholder {
   color: var(--ash-2);
 }

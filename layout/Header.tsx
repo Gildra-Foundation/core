@@ -54,6 +54,20 @@ export function Header({ name, mark, nav, searchLabel, badge, mobileBadge, actio
   // разделы сравниваем без префикса языка: /en/items — это раздел /items
   const pathname = stripLocale(usePathname()).path;
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+
+  // меню закрывается при переходе (в том числе «назад») и по Esc — фокус возвращается на кнопку меню
+  useEffect(() => setMenuOpen(false), [pathname]);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+      setMenuOpen(false);
+      menuButton.current?.focus();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
@@ -89,6 +103,7 @@ export function Header({ name, mark, nav, searchLabel, badge, mobileBadge, actio
         <LanguageSwitch className={styles.lang} label={t.language} />
 
         <button
+          ref={menuButton}
           type="button"
           className={styles.menuButton}
           aria-expanded={menuOpen}
