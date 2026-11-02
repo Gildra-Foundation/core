@@ -415,7 +415,8 @@ a.champ {
 }
 
 @media (max-width: 960px) {
-  .root {
+  /* место под нижнюю панель с кнопками тиров — только пока она открыта, иначе под списком пустота */
+  .root:has(.action[data-active]) {
     padding-bottom: 170px;
   }
 

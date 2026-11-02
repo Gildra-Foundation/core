@@ -65,8 +65,19 @@ export function Header({ name, mark, nav, searchLabel, badge, mobileBadge, actio
       setMenuOpen(false);
       menuButton.current?.focus();
     };
+    // страница под открытым меню не прокручивается; на широком экране меню нет — закрываем, чтобы не держать блокировку
+    const root = document.documentElement;
+    const overflow = root.style.overflow;
+    root.style.overflow = 'hidden';
+    const wide = window.matchMedia('(min-width: 1181px)');
+    const onWide = () => wide.matches && setMenuOpen(false);
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    wide.addEventListener('change', onWide);
+    return () => {
+      root.style.overflow = overflow;
+      document.removeEventListener('keydown', onKey);
+      wide.removeEventListener('change', onWide);
+    };
   }, [menuOpen]);
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);

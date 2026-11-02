@@ -223,6 +223,10 @@
 
   .mobile {
     display: block;
+    /* страница под меню не прокручивается — на низком экране прокручивается само меню */
+    max-height: calc(100dvh - var(--header-h));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 8px var(--gutter) 20px;
     border-top: 1px solid var(--line);
     background: var(--night);
